@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ua">
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вхід на сайт</title>
+    <!-- <link href="./css/style.css" rel="stylesheet" type="text/css">-->
+    <style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    body {
+        background-color: steelblue;
+        color: white;
+        font-family: Arial, Helvetica, sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        overflow: hidden;
+    }
+    .login-form {
+        background-color: rgba(0, 0, 0, 0.4);
+        padding: 20px 40px;
+        border-radius: 10px;
+    }
+    .login-form h1 {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    .login-form a {
+        text-decoration: none;
+        color: lightblue;
+    }
+    .btn {
+        cursor: pointer;
+        display: inline-block;
+        width: 100%;
+        background-color: yellow;
+        font-family: inherit;
+        font-size: 16px;
+        padding: 15px;
+        border: 0;
+        border-radius: 5px;
+        font-weight: bold;
+    }
+    .btn:focus {
+        outline: 0;
+    }
+    .btn:active {
+        transform: scale(0.98);
+    }
+    .login-form p {
+        margin-top: 20px;
+        font-size: 12px;
+    }
+    .form-control {
+        position: relative;
+        margin: 20px 0 40px;
+        width: 300px;
+    }
+    .form-control input {
+        background-color: transparent;
+        border: 0;
+        border-bottom: 2px #fff solid;
+        display: block;
+        width: 100%;
+        padding: 15px 0;
+        font-size: 18px;
+        color: #fff;
+    }
+    .form-control input:focus,
+    .form-control input:valid {
+        outline: 0;
+        border-bottom-color: lightblue;
+    }   
+    .form-control label {
+        position: absolute;
+        top: 15px;
+        left: 0;
+    }
+    .form-control label span {
+        display: inline-block;
+        font-size: 18px;
+        min-width: 5px;
+        transition: 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+    .form-control input:focus + label span,
+    .form-control input:valid + label span {
+        color: lightblue;
+        transform: translateY(-30px);
+    }
+    </style>
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function(){
+            let btn = document.querySelector('.btn');
+            btn.addEventListener('click', async function(event){
+                event.preventDefault();
+                let username = document.querySelector('input[name=username]').value;
+                let password = document.querySelector('input[name=password]').value;
+                let response = await fetch("/login", {
+                    method: "POST",
+                    body: `{"username": "${username}", "password": "${password}"}`,
+                    headers: {'Content-Type': 'application/json'}
+                });
+                let response_json = await response.json();
+                if (response_json.success){
+                    let body = document.querySelector('body');
+                    body.style.backgroundColor = "white";
+                    body.style.display = "block";
+                    body.style.color = "black";
+                    body.innerHTML = response_json.message;
+                }
+                else{
+                    let body = document.querySelector('body');
+                    body.style.backgroundColor = "red";
+                    body.style.display = "block";
+                    body.style.color = "white";
+                    body.style.fontWeight = "bolt";
+                    body.innerHTML = response_json.message;
+                }
+            })
+        })
+    </script>
+</head>
+<body>
+    <div class="login-form">
+        <h1>Увійти на сайт</h1>
+        <form method="POST" action="/login">
+            <div class="form-control">
+                <input type="text" name="username" autocomplete="off" required>
+                <label>Електронна пошта</label>
+            </div>
+            <div class="form-control">
+                <input type="password" name="password" autocomplete="off" required>
+                <label>Пароль</label>
+            </div>
+            <button class="btn">Увійти</button>
+            <p>Немаєте аккаунт? <a href="#">Зарєєструватися</a></p>
+            <p><a href="#">Забули пароль?</a></p>
+        </form>
+    </div>
+    <!-- <script src="./js/login.js"></script>-->
+    <script type="text/javascript">
+        const labels = document.querySelectorAll('.form-control label')
+
+        labels.forEach(label => {
+            letter = label.innerText.split('');
+            const el =[];
+            for (let i = 0;  i< letter.length; i++) {
+                el[i] = `<span style="transition-delay:${i*40}ms">${letter[i]}</span>`; 
+            };
+            label.innerHTML = el.join('');
+        })
+    </script>
+</body>
+</html>
