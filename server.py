@@ -1,3 +1,4 @@
+# FastApi server
 import base64
 import hmac
 import hashlib
@@ -92,7 +93,7 @@ def procces_login_page(data: dict = Body(...)):
                 "message": f"Привіт, {user['name']}!<br />Баланс: {user['balance']}"
             }),
         media_type='application/json')
-    
-    username_signed = base64.b64encode(username.encode()).decode() + "." + sing_data(username) 
+
+    username_signed = base64.b64encode(username.encode()).decode() + "." + sing_data(username)
     response.set_cookie(key="username", value=username_signed)
     return response
